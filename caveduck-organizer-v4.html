@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>케이브덕 캐릭터 정리 도구</title>
+<style>
+:root{--bg:#f4f3ef;--sf:#fff;--sf2:#f7f7f5;--bd:#e2e0db;--tx:#1a1a1a;--tx2:#666;--tx3:#999;--ac:#2d2d2d;--bl:#4a7fd4;--blb:#edf3fc;--rd:#c44;--rdb:#fef0f0;--gn:#2d7a3a;--r:10px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);padding:1.5rem 1rem;min-height:100vh;line-height:1.6}
+.w{max-width:740px;margin:0 auto}
+.hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;flex-wrap:wrap;gap:6px}
+.hd h1{font-size:17px;font-weight:700}
+.hd-sub{font-size:11px;color:var(--tx3)}
+.sv{font-size:11px;color:var(--gn);opacity:0;transition:opacity .3s}.sv.on{opacity:1}
+.cb{display:flex;gap:6px;align-items:center;margin-bottom:1.2rem;flex-wrap:wrap}
+.cb select{font-size:13px;padding:7px 10px;border:1px solid var(--bd);border-radius:var(--r);background:var(--sf);color:var(--tx);min-width:160px}
+.b{font-size:12px;font-weight:500;padding:7px 12px;border-radius:var(--r);cursor:pointer;border:1px solid var(--bd);background:var(--sf);color:var(--tx);transition:all .15s}
+.b:hover{background:var(--sf2)}.bp{background:var(--ac);color:#fff;border-color:var(--ac)}.bp:hover{background:#444}
+.bd{color:var(--rd);border-color:#e8c4c4}.bd:hover{background:var(--rdb)}
+.bg{color:var(--gn);border-color:#b0d4b5}.bg:hover{background:#f0faf0}
+.bs{padding:4px 9px;font-size:11px}
+.tb{display:flex;border-bottom:1px solid var(--bd);margin-bottom:1.2rem;overflow-x:auto}
+.t{font-size:12px;font-weight:500;padding:8px 14px;cursor:pointer;color:var(--tx3);border-bottom:2px solid transparent;margin-bottom:-1px;background:none;border-left:none;border-top:none;border-right:none;white-space:nowrap;transition:color .15s}
+.t:hover{color:var(--tx)}.t.a{color:var(--tx);border-bottom-color:var(--ac)}
+.p{display:none}.p.a{display:block}
+.c{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:10px;overflow:hidden}
+.ch{display:flex;align-items:center;justify-content:space-between;padding:7px 12px;background:var(--sf2);border-bottom:1px solid #eee}
+.ct{font-size:11px;font-weight:600;color:var(--tx2);letter-spacing:.03em;text-transform:uppercase}
+.cy{padding:10px 12px}
+.cy textarea,.cy input[type=text]{width:100%;font-size:13px;border:1px solid #eee;border-radius:8px;padding:7px 10px;background:#fafafa;color:var(--tx);resize:vertical;line-height:1.6;outline:none;font-family:inherit;transition:border .15s}
+.cy textarea:focus,.cy input:focus{border-color:var(--bl)}
+.cy textarea{min-height:55px}
+.cp{font-size:11px;padding:3px 9px;border-radius:100px;border:1px solid var(--bd);background:var(--sf);color:var(--tx2);cursor:pointer;transition:all .15s}
+.cp:hover{background:var(--blb);border-color:var(--bl);color:var(--bl)}
+.tc{font-size:10px;color:var(--tx3);text-align:right;margin-top:2px}.tc.w{color:#b07700}.tc.o{color:var(--rd);font-weight:600}
+.ec{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:10px;overflow:hidden}
+.eh{display:flex;align-items:center;justify-content:space-between;padding:6px 12px;background:var(--sf2);border-bottom:1px solid #eee}
+.en{font-size:11px;font-weight:600;color:var(--tx3)}
+.ea{display:flex;gap:5px;align-items:center}
+.ea select{font-size:11px;padding:2px 5px;border-radius:6px;background:var(--sf);border:1px solid var(--bd)}
+.ed{font-size:11px;padding:2px 7px;border-radius:6px;border:1px solid #e0c4c4;background:var(--rdb);color:var(--rd);cursor:pointer}
+.ed:hover{background:#ffe0e0}
+.eb{padding:9px 12px;display:flex;flex-direction:column;gap:7px}
+.el{font-size:11px;font-weight:600;color:var(--tx3);margin-bottom:1px}
+.eb input,.eb textarea{width:100%;font-size:13px;border:1px solid #eee;border-radius:8px;padding:6px 9px;background:#fafafa;color:var(--tx);outline:none;font-family:inherit;transition:border .15s}
+.eb input:focus,.eb textarea:focus{border-color:var(--bl)}
+.eb textarea{min-height:50px;resize:vertical;line-height:1.5}
+.lc{display:flex;gap:6px;align-items:flex-start;margin-bottom:7px}
+.lk{width:110px;flex-shrink:0;font-size:13px;border:1px solid #eee;border-radius:8px;padding:6px 9px;background:#fafafa;color:var(--tx);outline:none;font-family:inherit}
+.lk:focus{border-color:var(--bl)}
+.lv{flex:1;font-size:13px;border:1px solid #eee;border-radius:8px;padding:6px 9px;background:#fafafa;color:var(--tx);outline:none;min-height:34px;resize:none;line-height:1.5;font-family:inherit}
+.lv:focus{border-color:var(--bl)}
+.cnt{font-size:11px;color:var(--tx3);margin-bottom:7px}
+.ca{margin-top:6px;padding:8px 12px;background:var(--sf2);border-radius:var(--r);border:1px solid var(--bd)}
+.cat{font-size:11px;font-weight:600;color:var(--tx2);margin-bottom:5px}
+.tip{font-size:11px;color:var(--tx3);padding:7px 10px;background:var(--blb);border-left:2px solid #99bbee;margin-bottom:10px;border-radius:0 6px 6px 0}
+/* 모달 */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center}
+.modal-bg.on{display:flex}
+.modal{background:var(--sf);border-radius:14px;padding:24px 22px;width:90%;max-width:360px;box-shadow:0 8px 32px rgba(0,0,0,.18)}
+.modal h3{font-size:15px;font-weight:700;margin-bottom:12px}
+.modal input{width:100%;font-size:14px;padding:9px 12px;border:1px solid var(--bd);border-radius:8px;outline:none;font-family:inherit;margin-bottom:14px}
+.modal input:focus{border-color:var(--bl)}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end}
+@media(max-width:500px){.cb{flex-direction:column;align-items:stretch}.cb select{min-width:auto}.lc{flex-direction:column}.lk{width:100%}}
+</style>
+</head>
+<body>
+<div class="w">
+  <div class="hd">
+    <div><h1>케이브덕 캐릭터 정리 도구</h1><div class="hd-sub">필드 정리 · 도입부 · 예시 대화 · 로어북</div></div>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span class="sv" id="sv">저장됨 ✓</span>
+      <button class="b bg" onclick="exportData()" style="font-size:11px;padding:5px 10px">📤 내보내기</button>
+      <button class="b" onclick="document.getElementById('importFile').click()" style="font-size:11px;padding:5px 10px">📥 가져오기</button>
+      <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this)">
+      <button class="b bp" onclick="manualSave()" style="font-size:11px;padding:5px 10px">💾 저장</button>
+    </div>
+  </div>
+  <div class="cb">
+    <select id="cs" onchange="swChar()"></select>
+    <input type="text" id="newCharName" placeholder="새 캐릭터 이름" style="font-size:12px;padding:6px 10px;border:1px solid var(--bd);border-radius:var(--r);background:var(--sf);color:var(--tx);min-width:130px;outline:none" onkeydown="if(event.key==='Enter')nChar()">
+    <button class="b bp" onclick="nChar()">+ 추가</button>
+    <button class="b" onclick="openRenameModal()">이름 변경</button>
+    <button class="b bd" onclick="dlChar()">삭제</button>
+  </div>
+  <div class="tb">
+    <button class="t a" onclick="swT('fld',this)">케이브덕 필드</button>
+    <button class="t" onclick="swT('opn',this)">도입부</button>
+    <button class="t" onclick="swT('exm',this)">예시 대화</button>
+    <button class="t" onclick="swT('lbk',this)">로어북</button>
+  </div>
+
+  <!-- 케이브덕 필드 -->
+  <div id="tab-fld" class="p a">
+    <div class="c">
+      <div class="ch"><span class="ct">공개 정보</span><button class="cp" onclick="cpF('fPub',this)">복사</button></div>
+      <div class="cy"><textarea id="fPub" rows="5" maxlength="3000" placeholder="캐릭터의 기본 정보. 플레이어가 볼 수 있어요." oninput="as()"></textarea><div class="tc" id="tc-fPub">0/3,000</div></div>
+    </div>
+    <div class="c">
+      <div class="ch"><span class="ct">비공개 정보</span><button class="cp" onclick="cpF('fPri',this)">복사</button></div>
+      <div class="cy"><textarea id="fPri" rows="5" maxlength="3000" placeholder="AI만 아는 정보. 플레이어는 볼 수 없어요." oninput="as()"></textarea><div class="tc" id="tc-fPri">0/3,000</div></div>
+    </div>
+    <div class="c">
+      <div class="ch"><span class="ct">세계관</span><button class="cp" onclick="cpF('fWld',this)">복사</button></div>
+      <div class="cy"><textarea id="fWld" rows="4" maxlength="3000" placeholder="배경 세계관 설명." oninput="as()"></textarea><div class="tc" id="tc-fWld">0/3,000</div></div>
+    </div>
+    <div class="c">
+      <div class="ch"><span class="ct">커스텀 프롬프트</span><button class="cp" onclick="cpF('fPrm',this)">복사</button></div>
+      <div class="cy"><textarea id="fPrm" rows="4" maxlength="3000" placeholder="AI 행동 지침 등 추가 프롬프트." oninput="as()"></textarea><div class="tc" id="tc-fPrm">0/3,000</div></div>
+    </div>
+    <div style="margin-top:4px"><button class="b" onclick="cpAll()">전체 복사</button></div>
+  </div>
+
+  <!-- 도입부 -->
+  <div id="tab-opn" class="p">
+    <div class="tip">하나의 캐릭터에 여러 도입부를 만들 수 있어요. 각 도입부마다 독립적인 비밀 설정과 문체 가이드를 적용할 수 있어요.</div>
+    <div class="cnt" id="opnCnt">0개</div>
+    <div id="opnArea"></div>
+    <div style="display:flex;gap:6px;margin-top:8px">
+      <button class="b" onclick="addOpn()">+ 도입부 추가</button>
+    </div>
+  </div>
+
+  <!-- 예시 대화 -->
+  <div id="tab-exm" class="p">
+    <div class="cnt" id="exCnt">0개</div>
+    <div id="exArea"></div>
+    <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+      <button class="b" onclick="addEx()">+ 예시 대화 추가</button>
+      <button class="b" onclick="cpAllEx()">전체 복사</button>
+    </div>
+  </div>
+
+  <!-- 로어북 -->
+  <div id="tab-lbk" class="p">
+    <div class="tip">키워드와 설명을 입력하세요. 사용자가 키워드를 언급하면 AI가 해당 설명을 참조해요.</div>
+    <div id="lbArea"></div>
+    <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+      <button class="b" onclick="addLb()">+ 항목 추가</button>
+      <button class="b" onclick="cpAllLb()">전체 복사</button>
+    </div>
+  </div>
+</div>
+
+<!-- 이름 변경 모달 -->
+<div class="modal-bg" id="renameModal">
+  <div class="modal">
+    <h3>이름 변경</h3>
+    <input type="text" id="renameInput" placeholder="새 캐릭터 이름" onkeydown="if(event.key==='Enter')confirmRename();if(event.key==='Escape')closeRenameModal()">
+    <div class="modal-btns">
+      <button class="b" onclick="closeRenameModal()">취소</button>
+      <button class="b bp" onclick="confirmRename()">변경</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SK='caveduck-org-v4';
+let D={chars:{},cur:''}, cid='', opnD=[], exD=[], lbD=[];
+
+function defC(){
+  return{
+    fields:{fPub:'',fPri:'',fWld:'',fPrm:''},
+    openings:[{title:'',content:'',secret:'',style:''}],
+    examples:[{u:'',c:'',imp:'항상 적용'},{u:'',c:'',imp:'항상 적용'},{u:'',c:'',imp:'항상 적용'},{u:'',c:'',imp:'항상 적용'},{u:'',c:'',imp:'항상 적용'}],
+    lorebook:[{k:'',v:''},{k:'',v:''},{k:'',v:''}]
+  };
+}
+
+/* ── 저장 ── */
+function sv(){try{localStorage.setItem(SK,JSON.stringify(D));}catch(e){console.error(e);}}
+
+// 현재 화면 데이터를 D에 수집만 (저장은 하지 않음)
+function collectCurrent(){
+  if(!cid||!D.chars[cid])return;
+  var f={};
+  ['fPub','fPri','fWld','fPrm'].forEach(function(k){
+    var e=document.getElementById(k);
+    if(e)f[k]=e.value;
+  });
+  D.chars[cid].fields=f;
+  D.chars[cid].openings=JSON.parse(JSON.stringify(opnD));
+  D.chars[cid].examples=JSON.parse(JSON.stringify(exD));
+  D.chars[cid].lorebook=JSON.parse(JSON.stringify(lbD));
+  D.cur=cid;
+}
+
+function doSv(){collectCurrent();sv();flash();}
+function manualSave(){doSv();}
+
+var st=null;
+function as(){if(st)clearTimeout(st);st=setTimeout(function(){doSv();},2000);}
+
+function flash(){var e=document.getElementById('sv');e.classList.add('on');setTimeout(function(){e.classList.remove('on');},2000);}
+
+/* ── 로드 ── */
+function ld(){
+  try{var r=localStorage.getItem(SK);D=r?JSON.parse(r):{chars:{},cur:''};}
+  catch(e){D={chars:{},cur:''};}
+  if(!Object.keys(D.chars).length){
+    var id='c'+Date.now();
+    D.chars[id]={name:'새 캐릭터'};
+    Object.assign(D.chars[id],defC());
+    D.cur=id;sv();
+  }
+  cid=D.cur||Object.keys(D.chars)[0];
+  rfSel();ldC();
+}
+
+function rfSel(){
+  var s=document.getElementById('cs');
+  s.innerHTML='';
+  Object.keys(D.chars).forEach(function(id){
+    var o=document.createElement('option');
+    o.value=id;o.textContent=D.chars[id].name;
+    s.appendChild(o);
+  });
+  if(cid)s.value=cid;
+}
+
+function ldC(){
+  var c=D.chars[cid];if(!c)return;
+  ['fPub','fPri','fWld','fPrm'].forEach(function(k){
+    var e=document.getElementById(k);
+    if(e)e.value=(c.fields||{})[k]||'';
+  });
+  updateAllTc();
+  opnD=JSON.parse(JSON.stringify(c.openings||defC().openings));rOpn();
+  exD=JSON.parse(JSON.stringify(c.examples||defC().examples));rEx();
+  lbD=JSON.parse(JSON.stringify(c.lorebook||defC().lorebook));rLb();
+}
+
+/* ── 캐릭터 전환 ── */
+function swChar(){
+  collectCurrent();sv();          // 현재 캐릭터 저장
+  cid=document.getElementById('cs').value;
+  D.cur=cid;
+  ldC();
+}
+
+/* ── 새 캐릭터 ── */
+function nChar(){
+  var inp=document.getElementById('newCharName');
+  var n=inp?inp.value.trim():null;
+  if(!n){alert('캐릭터 이름을 입력해주세요.');return;}
+  collectCurrent();sv();          // 현재 캐릭터 저장
+  var id='c'+Date.now();
+  D.chars[id]={name:n};
+  Object.assign(D.chars[id],defC());
+  cid=id;D.cur=id;
+  if(inp)inp.value='';
+  sv();rfSel();ldC();flash();
+}
+
+/* ── 이름 변경 (모달) ── */
+function openRenameModal(){
+  if(!cid||!D.chars[cid])return;
+  var inp=document.getElementById('renameInput');
+  inp.value=D.chars[cid].name;
+  document.getElementById('renameModal').classList.add('on');
+  setTimeout(function(){inp.focus();inp.select();},50);
+}
+function closeRenameModal(){
+  document.getElementById('renameModal').classList.remove('on');
+}
+function confirmRename(){
+  var n=document.getElementById('renameInput').value.trim();
+  if(!n){alert('이름을 입력해주세요.');return;}
+  D.chars[cid].name=n;
+  sv();rfSel();flash();
+  closeRenameModal();
+}
+// 모달 바깥 클릭 시 닫기
+document.getElementById('renameModal').addEventListener('click',function(e){
+  if(e.target===this)closeRenameModal();
+});
+
+/* ── 삭제 ── */
+function dlChar(){
+  if(!cid||!D.chars[cid])return;
+  var name=D.chars[cid].name;
+  if(!confirm('"'+name+'" 캐릭터를 삭제할까요?\n삭제 후 복구가 불가능해요!'))return;
+  delete D.chars[cid];
+  var ids=Object.keys(D.chars);
+  if(!ids.length){
+    var id='c'+Date.now();
+    D.chars[id]={name:'새 캐릭터'};
+    Object.assign(D.chars[id],defC());
+    cid=id;
+  }else{
+    cid=ids[0];
+  }
+  D.cur=cid;
+  sv();rfSel();ldC();flash();
+}
+
+/* ── 내보내기 / 가져오기 ── */
+function exportData(){
+  collectCurrent();sv();
+  var blob=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  var now=new Date();
+  var ts=now.getFullYear()+'-'+(now.getMonth()+1).toString().padStart(2,'0')+'-'+now.getDate().toString().padStart(2,'0');
+  a.href=url;a.download='caveduck-backup-'+ts+'.json';
+  a.click();URL.revokeObjectURL(url);
+  flash();
+}
+
+function importData(input){
+  var file=input.files[0];if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var data=JSON.parse(e.target.result);
+      if(!data.chars){alert('올바른 백업 파일이 아니에요.');return;}
+      if(!confirm('현재 데이터를 덮어쓰고 가져올까요?\n기존 데이터는 사라져요!'))return;
+      D=data;
+      if(!Object.keys(D.chars).length){alert('가져올 캐릭터가 없어요.');return;}
+      cid=D.cur||Object.keys(D.chars)[0];
+      sv();rfSel();ldC();flash();
+      alert('가져오기 완료! ✓');
+    }catch(err){
+      alert('파일을 읽을 수 없어요. JSON 형식을 확인해주세요.');
+    }
+  };
+  reader.readAsText(file);
+  input.value='';
+}
+
+/* ── 탭 전환 ── */
+function swT(n,el){
+  document.querySelectorAll('.t').forEach(function(t){t.classList.remove('a');});
+  document.querySelectorAll('.p').forEach(function(p){p.classList.remove('a');});
+  el.classList.add('a');
+  document.getElementById('tab-'+n).classList.add('a');
+}
+
+/* ── 글자수 카운터 ── */
+function updateAllTc(){
+  ['fPub','fPri','fWld','fPrm'].forEach(function(k){
+    var e=document.getElementById(k);
+    var tc=document.getElementById('tc-'+k);
+    if(e&&tc)tc.textContent=e.value.length.toLocaleString()+'/3,000';
+  });
+}
+['fPub','fPri','fWld','fPrm'].forEach(function(k){
+  document.addEventListener('DOMContentLoaded',function(){
+    var e=document.getElementById(k);
+    if(e)e.addEventListener('input',function(){
+      var tc=document.getElementById('tc-'+k);
+      if(tc)tc.textContent=e.value.length.toLocaleString()+'/3,000';
+    });
+  });
+});
+
+/* ── 유틸 ── */
+function esc(s){
+  var amp=String.fromCharCode(38),lt=String.fromCharCode(60),gt=String.fromCharCode(62),q=String.fromCharCode(34);
+  var t=String(s||'');
+  t=t.split(amp).join(amp+'amp;');t=t.split(lt).join(amp+'lt;');t=t.split(gt).join(amp+'gt;');t=t.split(q).join(amp+'quot;');
+  return t;
+}
+function cpF(id,btn){var v=document.getElementById(id).value;if(!v.trim())return;navigator.clipboard.writeText(v).then(function(){if(btn){var o=btn.textContent;btn.textContent='✓';setTimeout(function(){btn.textContent=o;},1500);}});}
+function cpT(t,btn){navigator.clipboard.writeText(t).then(function(){if(btn){var o=btn.textContent;btn.textContent='✓';setTimeout(function(){btn.textContent=o;},1500);}});}
+function cpAll(){
+  var lb={fPub:'[공개 정보]',fPri:'[비공개 정보]',fWld:'[세계관]',fPrm:'[커스텀 프롬프트]'};
+  var pt=[];
+  ['fPub','fPri','fWld','fPrm'].forEach(function(k){var v=(document.getElementById(k)||{}).value||'';if(v.trim())pt.push(lb[k]+'\n'+v);});
+  if(!pt.length){alert('내용이 없어요.');return;}
+  navigator.clipboard.writeText(pt.join('\n\n'));flash();
+}
+
+/* ── 도입부 ── */
+function rOpn(){
+  var a=document.getElementById('opnArea');if(!a)return;a.innerHTML='';
+  opnD.forEach(function(o,i){
+    var d=document.createElement('div');d.className='c';d.style.marginBottom='12px';
+    d.innerHTML='<div class="ch"><span class="ct">도입부 #'+(i+1)+(o.title?' — '+esc(o.title):'' )+'</span><div style="display:flex;gap:5px"><button class="cp" onclick="cpOpn('+i+',this)">복사</button><button class="ed" onclick="dlOpn('+i+')">삭제</button></div></div>'
+      +'<div class="cy" style="display:flex;flex-direction:column;gap:8px">'
+      +'<div><div class="el">도입부 제목 <span style="color:var(--rd)">*</span></div><input type="text" value="'+esc(o.title)+'" maxlength="60" placeholder="제목 (최대 60자)" oninput="opnD['+i+'].title=this.value;as()"><div class="tc">'+(o.title||'').length+'/60</div></div>'
+      +'<div><div class="el">도입부 내용 <span style="color:var(--rd)">*</span></div><textarea rows="5" maxlength="10000" placeholder="캐릭터와 처음 시작될 내용을 작성해 주세요." oninput="opnD['+i+'].content=this.value;as()">'+esc(o.content)+'</textarea><div class="tc">'+(o.content||'').length+'/10,000</div></div>'
+      +'<div><div class="el">도입부 비밀 <span style="font-weight:400;color:var(--tx3)">(플레이어는 볼 수 없어요)</span></div><textarea rows="3" maxlength="10000" placeholder="이 도입부에서만 적용되는 숨겨진 설정." oninput="opnD['+i+'].secret=this.value;as()">'+esc(o.secret)+'</textarea><div class="tc">'+(o.secret||'').length+'/10,000</div></div>'
+      +'<div><div class="el">문체 가이드 <span style="font-weight:400;color:var(--tx3)">(비워두면 기본 문체)</span></div><textarea rows="2" placeholder="캐릭터의 말투나 문체 스타일을 지정해주세요." oninput="opnD['+i+'].style=this.value;as()">'+esc(o.style)+'</textarea></div></div>';
+    a.appendChild(d);
+  });
+  document.getElementById('opnCnt').textContent=opnD.length+'개';
+}
+function addOpn(){opnD.push({title:'',content:'',secret:'',style:''});rOpn();as();}
+function dlOpn(i){if(opnD.length<=1){alert('최소 1개는 필요해요.');return;}opnD.splice(i,1);rOpn();as();}
+function cpOpn(i,btn){var o=opnD[i];var t='[도입부: '+(o.title||'무제')+']\n'+o.content+(o.secret?'\n\n[비밀]\n'+o.secret:'')+(o.style?'\n\n[문체]\n'+o.style:'');cpT(t,btn);}
+
+/* ── 예시 대화 ── */
+function rEx(){
+  var a=document.getElementById('exArea');if(!a)return;a.innerHTML='';
+  exD.forEach(function(e,i){
+    var d=document.createElement('div');d.className='ec';
+    d.innerHTML='<div class="eh"><span class="en">#'+(i+1)+'</span><div class="ea"><select onchange="exD['+i+'].imp=this.value;as()"><option value="항상 적용"'+(e.imp==='항상 적용'?' selected':'')+'>항상 적용</option><option value="일반"'+(e.imp==='일반'?' selected':'')+'>일반</option></select><button class="cp" onclick="cpEx('+i+',this)">복사</button><button class="ed" onclick="dlEx('+i+')">삭제</button></div></div>'
+      +'<div class="eb"><div><div class="el">사용자 대사</div><input type="text" value="'+esc(e.u)+'" placeholder="사용자가 할 법한 질문이나 대사" oninput="exD['+i+'].u=this.value;as();uEC()"></div>'
+      +'<div><div class="el">캐릭터 대사</div><textarea maxlength="800" placeholder="캐릭터의 답변. 행동묘사(*...*) 포함 가능." oninput="exD['+i+'].c=this.value;as();uEC();uETC(this,'+i+')">'+esc(e.c)+'</textarea><div class="tc" id="etc'+i+'">'+(e.c||'').length+'/800</div></div></div>';
+    a.appendChild(d);
+  });
+  uEC();
+}
+function addEx(){exD.push({u:'',c:'',imp:'항상 적용'});rEx();as();}
+function dlEx(i){if(exD.length<=1){alert('최소 1개.');return;}exD.splice(i,1);rEx();as();}
+function uEC(){var el=document.getElementById('exCnt');if(!el)return;var f=exD.filter(function(e){return e.u.trim()&&e.c.trim();}).length;el.textContent=f+' / '+exD.length+'개 작성됨';}
+function uETC(ta,i){var l=ta.value.length;var el=document.getElementById('etc'+i);if(el){el.textContent=l+'/800';el.className='tc'+(l>=800?' o':l>=720?' w':'');}}
+function cpEx(i,btn){var e=exD[i];cpT('사용자: '+e.u+'\n캐릭터: '+e.c,btn);}
+function cpAllEx(){var f=exD.filter(function(e){return e.u.trim()||e.c.trim();});if(!f.length){alert('없어요.');return;}navigator.clipboard.writeText(f.map(function(e,i){return '[예시'+(i+1)+'] ('+e.imp+')\n사용자: '+e.u+'\n캐릭터: '+e.c;}).join('\n\n'));flash();}
+
+/* ── 로어북 ── */
+function rLb(){
+  var a=document.getElementById('lbArea');if(!a)return;a.innerHTML='';
+  lbD.forEach(function(l,i){
+    var d=document.createElement('div');d.className='lc';
+    d.innerHTML='<input class="lk" value="'+esc(l.k)+'" placeholder="키워드" oninput="lbD['+i+'].k=this.value;as()"><textarea class="lv" rows="1" placeholder="설명" oninput="lbD['+i+'].v=this.value;as()">'+esc(l.v)+'</textarea><button class="cp" onclick="cpLb('+i+',this)">복사</button><button class="ed" onclick="dlLb('+i+')">삭제</button>';
+    a.appendChild(d);
+  });
+}
+function addLb(){lbD.push({k:'',v:''});rLb();as();}
+function dlLb(i){if(lbD.length<=1){alert('최소 1개.');return;}lbD.splice(i,1);rLb();as();}
+function cpLb(i,btn){cpT(lbD[i].k+': '+lbD[i].v,btn);}
+function cpAllLb(){var f=lbD.filter(function(l){return l.k.trim();});if(!f.length){alert('없어요.');return;}navigator.clipboard.writeText(f.map(function(l){return l.k+': '+l.v;}).join('\n'));flash();}
+
+ld();
+</script>
+</body>
+</html>
